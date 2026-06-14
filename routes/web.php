@@ -33,3 +33,5 @@ Route::middleware(['auth'])->group(function () {
 
 // Rute pencarian musik    
 Route::get('/music/search', [MusicController::class, 'search'])->name('music.search');
+
+
