@@ -13,7 +13,6 @@ class MusicController extends Controller
         $music = Music::all(); // Mengambil semua data musik
         return view('music.index', compact('music')); // Mengembalikan view dengan data musik
     }
-    
 
   // Mengekspor Sewa Music ke PDF
 public function exportPdf() 
@@ -47,34 +46,10 @@ public function exportPdf()
             'keterangan' => 'nullable|string',
         ]);
 
-        // =====
-
-        // 'keterangan' => 'nullable|string|max:500',
-
-        // Tanpa batasan, user bisa memasukkan teks sangat panjang.
-
-        // =====
-
         // Membuat entri musik baru
         Music::create($request->all());
         return redirect()->route('music.index')->with('success', 'Music created successfully.'); // Redirect ke daftar musik dengan pesan sukses
     }
-
-// =====
-
-// Music::create([
-//     'nama_penyewa' => $request->nama_penyewa,
-//     'nama_alat_musik' => $request->nama_alat_musik,
-//     'tanggal_pinjam' => $request->tanggal_pinjam,
-//     'tanggal_kembali' => $request->tanggal_kembali,
-//     'harga_sewa' => $request->harga_sewa,
-//     'keterangan' => $request->keterangan,
-// ]);
-
-// mengambil seluruh data yang dikirim user, termasuk field yang tidak seharusnya diproses
-// Jika model tidak dikonfigurasi dengan benar, field tambahan bisa ikut tersimpan
-
-// =====
 
     // Menampilkan detail musik tertentu
     public function show(Music $music)
@@ -110,33 +85,10 @@ public function exportPdf()
         ->with('success', 'Music updated successfully.');
 }
 
-    // =====
-
-    // 'harga_sewa' => 'required|numeric|min:0',
-
-    // Mencegah Harga Negatif
-
-    // =====
-    
         // Memperbarui entri musik
         $music->update($request->all());
         return redirect()->route('music.index')->with('success', 'Music updated successfully.'); // Redirect ke daftar musik dengan pesan sukses
     }
-
-//     =====
-
-//     $music->update([
-//     'nama_penyewa' => $request->nama_penyewa,
-//     'nama_alat_musik' => $request->nama_alat_musik,
-//     'tanggal_pinjam' => $request->tanggal_pinjam,
-//     'tanggal_kembali' => $request->tanggal_kembali,
-//     'harga_sewa' => $request->harga_sewa,
-//     'keterangan' => $request->keterangan,
-// ]);
-
-//     mengambil seluruh data yang dikirim user, termasuk field yang tidak seharusnya diproses
-
-//     =====
 
     // Menghapus musik tertentu
     public function destroy($id)
