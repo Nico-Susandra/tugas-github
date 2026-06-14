@@ -139,9 +139,35 @@ public function exportPdf()
 //     =====
 
     // Menghapus musik tertentu
-    public function destroy(Music $music)
-    {
-        $music->delete(); // Menghapus entri musik
-        return redirect()->route('music.index')->with('success', 'Music deleted successfully.'); // Redirect ke daftar musik dengan pesan sukses
+    public function destroy($id)
+{
+    // cari data berdasarkan ID
+    $music = Music::find($id);
+
+    // cek apakah data ada atau tidak
+    if (!$music) {
+        return redirect()->route('music.index')
+            ->with('error', 'Data tidak ditemukan atau sudah dihapus');
     }
+
+    // kalau ada, baru hapus
+    $music->delete();
+
+    return redirect()->route('music.index')
+        ->with('success', 'Data berhasil dihapus');
+}
+
+    public function search(Request $request)
+{
+    // ambil kata yang diketik user
+    $keyword = $request->keyword;
+
+    // cari data di database
+    $music = Music::where('nama_penyewa', 'like', "%{$keyword}%")
+                ->orWhere('nama_alat_musik', 'like', "%{$keyword}%")
+                ->get();
+
+    // kirim hasil ke halaman index
+    return view('music.index', compact('music'));
+}
 }
