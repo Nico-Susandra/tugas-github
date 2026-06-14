@@ -30,3 +30,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('music/pdf', [MusicController::class, 'exportPdf'])->name('music.pdf');
     Route::resource('music', MusicController::class);
     });
+
+// Rute pencarian musik    
+Route::get('/music/search', [MusicController::class, 'search'])->name('music.search');

@@ -82,4 +82,18 @@ public function exportPdf()
         $music->delete(); // Menghapus entri musik
         return redirect()->route('music.index')->with('success', 'Music deleted successfully.'); // Redirect ke daftar musik dengan pesan sukses
     }
+
+    public function search(Request $request)
+{
+    // ambil kata yang diketik user
+    $keyword = $request->keyword;
+
+    // cari data di database
+    $music = Music::where('nama_penyewa', 'like', "%{$keyword}%")
+                ->orWhere('nama_alat_musik', 'like', "%{$keyword}%")
+                ->get();
+
+    // kirim hasil ke halaman index
+    return view('music.index', compact('music'));
+}
 }

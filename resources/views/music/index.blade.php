@@ -6,6 +6,13 @@
     <a href="{{ route('music.create') }}" class="btn btn-warning mb-4">Tambah Jadwal</a>
     <a href="{{ route('music.pdf') }}" class="btn btn-danger mb-4">Cetak PDF</a>
     
+
+    <form action="{{ route('music.search') }}" method="GET" class="mb-3 d-flex">
+    <input type="text" name="keyword" class="form-control me-2"
+           placeholder="Cari nama atau alat musik...">
+    <button type="submit" class="btn btn-primary">Cari</button>
+</form>
+
     <table id="table_music" class="table table-striped">
         <thead>
             <tr>
