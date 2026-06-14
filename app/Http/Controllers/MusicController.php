@@ -47,6 +47,22 @@ public function exportPdf()
         return redirect()->route('music.index')->with('success', 'Music created successfully.'); // Redirect ke daftar musik dengan pesan sukses
     }
 
+// =====
+
+// Music::create([
+//     'nama_penyewa' => $request->nama_penyewa,
+//     'nama_alat_musik' => $request->nama_alat_musik,
+//     'tanggal_pinjam' => $request->tanggal_pinjam,
+//     'tanggal_kembali' => $request->tanggal_kembali,
+//     'harga_sewa' => $request->harga_sewa,
+//     'keterangan' => $request->keterangan,
+// ]);
+
+// mengambil seluruh data yang dikirim user, termasuk field yang tidak seharusnya diproses
+// Jika model tidak dikonfigurasi dengan benar, field tambahan bisa ikut tersimpan
+
+// =====
+
     // Menampilkan detail musik tertentu
     public function show(Music $music)
     {
