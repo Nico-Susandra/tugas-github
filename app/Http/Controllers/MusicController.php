@@ -13,6 +13,7 @@ class MusicController extends Controller
         $music = Music::all(); // Mengambil semua data musik
         return view('music.index', compact('music')); // Mengembalikan view dengan data musik
     }
+    
 
   // Mengekspor Sewa Music ke PDF
 public function exportPdf() 
