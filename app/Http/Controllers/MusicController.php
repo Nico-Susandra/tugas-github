@@ -18,8 +18,13 @@ class MusicController extends Controller
   // Mengekspor Sewa Music ke PDF
 public function exportPdf() 
 {
+    if (!auth()->check()) {
+        abort(403);
+    }
+
     $music = Music::all();
     $pdf = FacadePdf::loadView('export.pdf', compact('music'));
+
     return $pdf->download('report_Sewa.pdf');
 }
 
@@ -84,17 +89,26 @@ public function exportPdf()
     }
 
     // Memperbarui data musik tertentu
-    public function update(Request $request, Music $music)
-    {
-        // Validasi input
-        $request->validate([
-            'nama_penyewa' => 'required',
-            'nama_alat_musik' => 'required',
-            'tanggal_pinjam' => 'required|date',
-            'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
-            'harga_sewa' => 'required|numeric',
-            'keterangan' => 'nullable|string',
-        ]);
+   public function update(Request $request, Music $music)
+{
+    if (!auth()->check()) {
+        abort(403);
+    }
+
+    $request->validate([
+        'nama_penyewa' => 'required',
+        'nama_alat_musik' => 'required',
+        'tanggal_pinjam' => 'required|date',
+        'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
+        'harga_sewa' => 'required|numeric',
+        'keterangan' => 'nullable|string',
+    ]);
+
+    $music->update($request->all());
+
+    return redirect()->route('music.index')
+        ->with('success', 'Music updated successfully.');
+}
 
     // =====
 
