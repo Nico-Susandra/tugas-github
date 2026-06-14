@@ -93,6 +93,21 @@ public function exportPdf()
         return redirect()->route('music.index')->with('success', 'Music updated successfully.'); // Redirect ke daftar musik dengan pesan sukses
     }
 
+//     =====
+
+//     $music->update([
+//     'nama_penyewa' => $request->nama_penyewa,
+//     'nama_alat_musik' => $request->nama_alat_musik,
+//     'tanggal_pinjam' => $request->tanggal_pinjam,
+//     'tanggal_kembali' => $request->tanggal_kembali,
+//     'harga_sewa' => $request->harga_sewa,
+//     'keterangan' => $request->keterangan,
+// ]);
+
+//     mengambil seluruh data yang dikirim user, termasuk field yang tidak seharusnya diproses
+
+//     =====
+
     // Menghapus musik tertentu
     public function destroy(Music $music)
     {
