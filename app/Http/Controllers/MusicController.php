@@ -35,16 +35,26 @@ public function exportPdf()
 
     // Menyimpan data musik baru
     public function store(Request $request)
-    {
-        // Validasi input
-        $request->validate([
-            'nama_penyewa' => 'required',
-            'nama_alat_musik' => 'required',
-            'tanggal_pinjam' => 'required|date',
-            'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
-            'harga_sewa' => 'required|numeric',
-            'keterangan' => 'nullable|string',
-        ]);
+{
+    if (!auth()->check()) {
+        abort(403);
+    }
+
+    // Validasi input
+    $request->validate([
+        'nama_penyewa' => 'required',
+        'nama_alat_musik' => 'required',
+        'tanggal_pinjam' => 'required|date',
+        'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
+        'harga_sewa' => 'required|numeric',
+        'keterangan' => 'nullable|string',
+    ]);
+
+    Music::create($request->all());
+
+    return redirect()->route('music.index')
+        ->with('success', 'Music created successfully.');
+}
 
         // Membuat entri musik baru
         Music::create($request->all());
