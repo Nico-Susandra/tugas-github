@@ -17,8 +17,13 @@ class MusicController extends Controller
   // Mengekspor Sewa Music ke PDF
 public function exportPdf() 
 {
+    if (!auth()->check()) {
+        abort(403);
+    }
+
     $music = Music::all();
     $pdf = FacadePdf::loadView('export.pdf', compact('music'));
+
     return $pdf->download('report_Sewa.pdf');
 }
 
