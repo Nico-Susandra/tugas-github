@@ -13,13 +13,17 @@ class MusicController extends Controller
         $music = Music::all(); // Mengambil semua data musik
         return view('music.index', compact('music')); // Mengembalikan view dengan data musik
     }
-    
 
   // Mengekspor Sewa Music ke PDF
 public function exportPdf() 
 {
+    if (!auth()->check()) {
+        abort(403);
+    }
+
     $music = Music::all();
     $pdf = FacadePdf::loadView('export.pdf', compact('music'));
+
     return $pdf->download('report_Sewa.pdf');
 }
 
@@ -42,34 +46,10 @@ public function exportPdf()
             'keterangan' => 'nullable|string',
         ]);
 
-        // =====
-
-        // 'keterangan' => 'nullable|string|max:500',
-
-        // Tanpa batasan, user bisa memasukkan teks sangat panjang.
-
-        // =====
-
         // Membuat entri musik baru
         Music::create($request->all());
         return redirect()->route('music.index')->with('success', 'Music created successfully.'); // Redirect ke daftar musik dengan pesan sukses
     }
-
-// =====
-
-// Music::create([
-//     'nama_penyewa' => $request->nama_penyewa,
-//     'nama_alat_musik' => $request->nama_alat_musik,
-//     'tanggal_pinjam' => $request->tanggal_pinjam,
-//     'tanggal_kembali' => $request->tanggal_kembali,
-//     'harga_sewa' => $request->harga_sewa,
-//     'keterangan' => $request->keterangan,
-// ]);
-
-// mengambil seluruh data yang dikirim user, termasuk field yang tidak seharusnya diproses
-// Jika model tidak dikonfigurasi dengan benar, field tambahan bisa ikut tersimpan
-
-// =====
 
     // Menampilkan detail musik tertentu
     public function show(Music $music)
@@ -84,50 +64,62 @@ public function exportPdf()
     }
 
     // Memperbarui data musik tertentu
-    public function update(Request $request, Music $music)
-    {
-        // Validasi input
-        $request->validate([
-            'nama_penyewa' => 'required',
-            'nama_alat_musik' => 'required',
-            'tanggal_pinjam' => 'required|date',
-            'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
-            'harga_sewa' => 'required|numeric',
-            'keterangan' => 'nullable|string',
-        ]);
+   public function update(Request $request, Music $music)
+{
+    if (!auth()->check()) {
+        abort(403);
+    }
 
-    // =====
+    $request->validate([
+        'nama_penyewa' => 'required',
+        'nama_alat_musik' => 'required',
+        'tanggal_pinjam' => 'required|date',
+        'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
+        'harga_sewa' => 'required|numeric',
+        'keterangan' => 'nullable|string',
+    ]);
 
-    // 'harga_sewa' => 'required|numeric|min:0',
+    $music->update($request->all());
 
-    // Mencegah Harga Negatif
+    return redirect()->route('music.index')
+        ->with('success', 'Music updated successfully.');
+}
 
-    // =====
-    
         // Memperbarui entri musik
         $music->update($request->all());
         return redirect()->route('music.index')->with('success', 'Music updated successfully.'); // Redirect ke daftar musik dengan pesan sukses
     }
 
-//     =====
-
-//     $music->update([
-//     'nama_penyewa' => $request->nama_penyewa,
-//     'nama_alat_musik' => $request->nama_alat_musik,
-//     'tanggal_pinjam' => $request->tanggal_pinjam,
-//     'tanggal_kembali' => $request->tanggal_kembali,
-//     'harga_sewa' => $request->harga_sewa,
-//     'keterangan' => $request->keterangan,
-// ]);
-
-//     mengambil seluruh data yang dikirim user, termasuk field yang tidak seharusnya diproses
-
-//     =====
-
     // Menghapus musik tertentu
-    public function destroy(Music $music)
-    {
-        $music->delete(); // Menghapus entri musik
-        return redirect()->route('music.index')->with('success', 'Music deleted successfully.'); // Redirect ke daftar musik dengan pesan sukses
+    public function destroy($id)
+{
+    // cari data berdasarkan ID
+    $music = Music::find($id);
+
+    // cek apakah data ada atau tidak
+    if (!$music) {
+        return redirect()->route('music.index')
+            ->with('error', 'Data tidak ditemukan atau sudah dihapus');
     }
+
+    // kalau ada, baru hapus
+    $music->delete();
+
+    return redirect()->route('music.index')
+        ->with('success', 'Data berhasil dihapus');
+}
+
+    public function search(Request $request)
+{
+    // ambil kata yang diketik user
+    $keyword = $request->keyword;
+
+    // cari data di database
+    $music = Music::where('nama_penyewa', 'like', "%{$keyword}%")
+                ->orWhere('nama_alat_musik', 'like', "%{$keyword}%")
+                ->get();
+
+    // kirim hasil ke halaman index
+    return view('music.index', compact('music'));
+}
 }
