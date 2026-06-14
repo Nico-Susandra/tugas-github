@@ -51,15 +51,13 @@ class LoginController extends Controller
     // Menglogout pengguna
     public function logout()
 {
-    if (!auth()->check()) {
-        abort(403);
-    }
-
     Auth::logout();
 
-    session()->flash('success', 'Anda telah berhasil logout.');
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
 
-    return redirect()->route('login');
+    return redirect()->route('login')
+        ->with('success', 'Anda telah berhasil logout.');
 }
     // Menampilkan form registrasi
     public function showRegistrationForm()
