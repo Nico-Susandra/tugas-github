@@ -30,16 +30,6 @@ class LoginController extends Controller
             session()->flash('success', 'Login berhasil!');
             return redirect()->route('music.index'); 
         }
-
-//         if (Auth::attempt($request->only('email', 'password'))) {
-
-//     $request->session()->regenerate();
-
-//     session()->flash('success', 'Login berhasil!');
-//     return redirect()->route('music.index');
-// }
-
-// Mencegah Session Fixation Attack, yaitu penyerang memanfaatkan ID session lama yang sudah diketahui.
     
         // Jika gagal, flash pesan error
         session()->flash('error', 'Email atau password salah.');
